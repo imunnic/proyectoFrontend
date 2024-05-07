@@ -78,11 +78,25 @@ public class App {
 
     //Metodo get con autenticacion
     try {
-      URL url = new URL(getApiUrl() + "/reservas/search");
+      URL url = new URL(getApiUrl() + "/reservas");
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
       con.setRequestMethod("GET");
       con.setConnectTimeout(5000);
       con.setReadTimeout(5000);
+      con.setRequestProperty("Authorization", "Bearer " + token);
+
+      try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+          response.append(inputLine);
+        }
+
+        // Muestra la respuesta por consola
+        System.out.println("Respuesta del servidor:");
+        System.out.println(response.toString());
+      }
+
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
