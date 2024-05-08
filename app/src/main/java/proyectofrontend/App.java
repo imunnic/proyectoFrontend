@@ -5,11 +5,15 @@ package proyectofrontend;
 
 import javax.swing.*;
 
+import DAO.ApiDAO;
 import DAO.PersonaDAO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entidades.Persona;
 import es.lanyu.ui.swing.SimpleJTable;
+import vistas.VistaLogin;
+
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
@@ -22,162 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class App {
-  static String token;
-  private static String getApiUrl() {
-    return "https://micolegio-c6e07df12596.herokuapp.com/api";
-  }
-
+  private static String token;
+  private static boolean logged;
   public static void main(String[] args) {
-    String username = "alejandro";
-    String password = "alejandro";
 
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode json = mapper.createObjectNode()
-        .put("username", username)
-        .put("password", password);
+    VistaLogin login = new VistaLogin();
 
-    //Metodo post
-    try {
-      URL url = new URL(getApiUrl() + "/auth/login");
-      HttpURLConnection con = (HttpURLConnection) url.openConnection();
-      con.setRequestMethod("POST");
-      con.setConnectTimeout(5000);
-      con.setReadTimeout(5000);
-      con.setDoOutput(true);
-      con.setDoInput(true);
-      con.setRequestProperty("Content-Type", "application/json");
-      con.setRequestProperty("Accept", "application/json");
-
-      // Crear el cuerpo de la solicitud en formato JSON
-      String jsonInputString = "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
-
-      // Escribir el cuerpo de la solicitud en la conexión
-      try(OutputStream os = con.getOutputStream()) {
-        byte[] input = json.toString().getBytes("utf-8");
-        os.write(input, 0, input.length);
-      }
-
-      try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-        String inputLine;
-        StringBuilder response = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-          response.append(inputLine);
-        }
-
-        JsonNode jsonNode = mapper.readTree(response.toString());
-
-        token = jsonNode.get("token").asText();
-
-        System.out.println("Token: " + token);
-
-      }
-      con.disconnect();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-    //Metodo get con autenticacion
-    try {
-      URL url = new URL(getApiUrl() + "/reservas");
-      HttpURLConnection con = (HttpURLConnection) url.openConnection();
-      con.setRequestMethod("GET");
-      con.setConnectTimeout(5000);
-      con.setReadTimeout(5000);
-      con.setRequestProperty("Authorization", "Bearer " + token);
-
-      try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-        String inputLine;
-        StringBuilder response = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-          response.append(inputLine);
-        }
-
-        // Muestra la respuesta por consola
-        System.out.println("Respuesta del servidor:");
-        System.out.println(response.toString());
-      }
-
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-
-
-/*    int ancho = 450, alto = 450;
-    JFrame ventana1 = new JFrame("Nueva Ventana");
-    ventana1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-    ventana1.setExtendedState(JFrame.MAXIMIZED_BOTH);
-    FormularioUsuario formulario = new FormularioUsuario();
-
-    BorderLayout layout = new BorderLayout();
-    ventana1.setLayout(layout);
-
-    JPanel textoPanel = new JPanel();
-    JPanel botones = new JPanel();
-    textoPanel.setLayout(new BoxLayout(textoPanel, BoxLayout.Y_AXIS));
-    botones.setLayout(new BoxLayout(botones, BoxLayout.Y_AXIS));
-
-    JLabel texto = new JLabel("Hola");
-
-    SimpleJTable<Persona> tablaUsuarios = new SimpleJTable<Persona>(personas,
-        new String[] {"Nombre", "Apellido 1", "Apellido 2"}, u -> u.getNombre(), u -> u.getApellido1(), u -> u.getApellido2());
-    tablaUsuarios.addMouseListener(new MouseAdapter() {
-      public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() >= 1) {
-          Persona seleccionado = tablaUsuarios.getSeleccionado();
-          usuarioSeleccionado.setText(seleccionado.toString());
-        }
-      }
-    });
-
-    JComboBox familias = new JComboBox<String>();
-    familias.setMaximumSize(new Dimension(100, 30));
-    familias.addItem("1");
-    familias.addItem("2");
-    familias.addItem("3");
-    familias.setSelectedItem(null);
-
-    familias.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED){
-          usuarioSeleccionado.setText(familias.getSelectedItem().toString());
-          Persona nuevaPersona = new Persona("Hola", "Dola", "Tela");
-          getPersonas().clear();
-          new PersonaDAO().getPersonas().stream().filter().forEach(p -> getPersonas().add(p));
-          }
-      }
-    });
-
-    textoPanel.add(texto, BorderLayout.CENTER);
-    usuariosLista.add(familias, BorderLayout.CENTER);
-    textoPanel.add(Box.createVerticalStrut(10));
-    usuariosLista.add(tablaUsuarios, BorderLayout.CENTER);
-    textoPanel.add(Box.createVerticalStrut(10));
-    
-    JButton boton1 = new JButton("Hola");
-    boton1.setSize(200,50);
-    boton1.setPreferredSize(new Dimension(50, 50));
-    boton1.setBackground(new Color(52, 152, 219));
-    boton1.setForeground(Color.WHITE); // Color de texto
-    boton1.setFocusPainted(false);
-    boton1.setFont(new Font("Arial", Font.BOLD, 14));
-    boton1.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(null, "¡Esto es una alerta!", "Alerta", JOptionPane.WARNING_MESSAGE);
-      }
-    });
-
-    botones.add(boton1);
-
-    ventana1.getContentPane().add(botones, BorderLayout.SOUTH);
-    ventana1.getContentPane().add(textoPanel, BorderLayout.CENTER);
-
-
-    ventana1.setSize(ancho, alto);
-    ventana1.setVisible(true);*/
   }
+  public static void loggear(String token){
+    App.token = token;
+    logged = true;
 
+  }
 }
