@@ -9,9 +9,11 @@ import DAO.ApiDAO;
 import DAO.PersonaDAO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import componentes.LoggedListener;
 import entidades.Persona;
 import es.lanyu.ui.swing.SimpleJTable;
 import vistas.VistaLogin;
+import vistas.VistaReservas;
 
 
 import java.awt.*;
@@ -28,14 +30,40 @@ import java.util.List;
 public class App {
   private static String token;
   private static boolean logged;
+  private static List<LoggedListener> loggedListeners = new ArrayList<>();
   public static void main(String[] args) {
 
     VistaLogin login = new VistaLogin();
+    VistaReservas reservas = new VistaReservas();
+
+    addLoggedListener(new LoggedListener() {
+      @Override
+      public void onLoggedChanged(boolean logged) {
+        if (logged) {
+          login.setVisible(false);
+          reservas.iniciarVistasReservas(1);
+        } else {
+          reservas.setVisible(false);
+          login.setVisible(true);
+        }
+      }
+    });
 
   }
   public static void loggear(String token){
     App.token = token;
     logged = true;
+    notifyLoggedListeners(logged);
 
+  }
+
+  public static void addLoggedListener(LoggedListener listener) {
+    loggedListeners.add(listener);
+  }
+
+  private static void notifyLoggedListeners(boolean logged) {
+    for (LoggedListener listener : loggedListeners) {
+      listener.onLoggedChanged(logged);
+    }
   }
 }

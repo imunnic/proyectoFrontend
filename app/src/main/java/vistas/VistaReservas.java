@@ -25,8 +25,28 @@ public class VistaReservas extends JFrame {
     JPanel headerPanel = new Header("MiColegio");
     headerPanel.setPreferredSize(new Dimension(1, headerHeight));
 
+    JPanel centralPanel = new JPanel();
+    centralPanel.setLayout(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.weightx = 0.2;
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    /*centralPanel.add(componente, gbc);*/
+    gbc.weightx = 0.8;
+    gbc.gridx = 1;
+    /*centralPanel.add(componente, gbc);*/
+
+
+    JLabel texto = new JLabel("Bienvenido a reservas");
+    centralPanel.add(texto);
+
     JPanel footerPanel = new Footer("@imunnic");
     footerPanel.setPreferredSize(new Dimension(1, footerHeight));
+
+    add(headerPanel, BorderLayout.NORTH);
+    add(centralPanel, BorderLayout.CENTER);
+    add(footerPanel, BorderLayout.SOUTH);
 
   }
 
