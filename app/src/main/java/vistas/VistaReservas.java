@@ -2,6 +2,12 @@ package vistas;
 
 import componentes.Footer;
 import componentes.Header;
+import org.jdatepicker.JDateComponentFactory;
+import org.jdatepicker.JDatePanel;
+import org.jdatepicker.JDatePicker;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,12 +43,16 @@ public class VistaReservas extends JFrame {
     gbc.gridx = 1;
     /*centralPanel.add(componente, gbc);*/
 
-
+    JDateComponentFactory factory = new JDateComponentFactory();
+    JDatePicker datePicker = factory.createJDatePicker();
     JLabel texto = new JLabel("Bienvenido a reservas");
     centralPanel.add(texto);
+    centralPanel.add((Component) datePicker);
 
     JPanel footerPanel = new Footer("@imunnic");
     footerPanel.setPreferredSize(new Dimension(1, footerHeight));
+
+
 
     add(headerPanel, BorderLayout.NORTH);
     add(centralPanel, BorderLayout.CENTER);

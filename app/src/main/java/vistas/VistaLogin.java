@@ -10,6 +10,8 @@ import java.awt.*;
 public class VistaLogin extends JFrame {
   private int ancho = 450, alto = 450;
 
+  private FormularioLogin login;
+
   public VistaLogin() {
     int headerHeight = (int) (0.1 * alto);
     int footerHeight = (int) (0.1 * alto);
@@ -20,7 +22,7 @@ public class VistaLogin extends JFrame {
     JPanel footerPanel = new Footer("@imunnic");
     footerPanel.setPreferredSize(new Dimension(1, footerHeight));
 
-    FormularioLogin login = new FormularioLogin();
+    login = new FormularioLogin();
 
     JPanel centerPanel = new JPanel(new GridBagLayout());
     centerPanel.setBackground(Color.WHITE);
@@ -40,7 +42,9 @@ public class VistaLogin extends JFrame {
     setSize(ancho, alto);
     setVisible(true);
   }
-
+  public void autoclick(){
+    login.getBotonLogin().doClick();
+  }
 
 
 }

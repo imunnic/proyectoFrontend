@@ -49,6 +49,8 @@ public class App {
       }
     });
 
+    login.autoclick();
+
   }
   public static void loggear(String token){
     App.token = token;

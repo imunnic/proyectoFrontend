@@ -15,6 +15,10 @@ public class FormularioLogin extends JPanel {
   private JPasswordField passwordCampo;
   private JButton botonLogin;
 
+  public JButton getBotonLogin() {
+    return botonLogin;
+  }
+
   public FormularioLogin() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -39,10 +43,10 @@ public class FormularioLogin extends JPanel {
 
   private void agregarComponentesFormularioPanel(JPanel formPanel) {
     formPanel.add(USUARIO);
-    usuarioCampo = new JTextField();
+    usuarioCampo = new JTextField("sofia"); //TODO quitar harcode para login rapido
     formPanel.add(usuarioCampo);
     formPanel.add(PASSWORD);
-    passwordCampo = new JPasswordField();
+    passwordCampo = new JPasswordField("sofia");//TODO quitar harcode para login rápido
     formPanel.add(passwordCampo);
   }
 

@@ -9,6 +9,6 @@ public class Header extends JPanel {
     label.setForeground(Color.WHITE);
     label.setFont(new Font("Arial", Font.BOLD, 18));
     setBackground(new Color(30, 60, 90));
-    add(label);
+    add(label, BorderLayout.CENTER);
   }
 }

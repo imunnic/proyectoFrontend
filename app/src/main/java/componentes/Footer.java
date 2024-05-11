@@ -9,6 +9,6 @@ public class Footer extends JPanel {
     label.setForeground(Color.WHITE);
     label.setFont(new Font("Arial", Font.ITALIC, 12));
     setBackground(new Color(30, 60, 90));
-    add(label);
+    add(label, BorderLayout.SOUTH);
   }
 }
