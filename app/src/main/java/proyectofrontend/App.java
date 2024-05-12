@@ -3,32 +3,18 @@
  */
 package proyectofrontend;
 
-import javax.swing.*;
-
 import DAO.ApiDAO;
-import DAO.PersonaDAO;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import componentes.LoggedListener;
-import entidades.Persona;
-import es.lanyu.ui.swing.SimpleJTable;
 import vistas.VistaLogin;
 import vistas.VistaReservas;
 
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class App {
   private static String token;
+  private static ApiDAO apiDAO = new ApiDAO<>();
   private static boolean logged;
   private static List<LoggedListener> loggedListeners = new ArrayList<>();
   public static void main(String[] args) {
@@ -41,7 +27,7 @@ public class App {
       public void onLoggedChanged(boolean logged) {
         if (logged) {
           login.setVisible(false);
-          reservas.iniciarVistasReservas(1);
+          reservas.iniciarVistasReservas();
         } else {
           reservas.setVisible(false);
           login.setVisible(true);
@@ -67,5 +53,9 @@ public class App {
     for (LoggedListener listener : loggedListeners) {
       listener.onLoggedChanged(logged);
     }
+  }
+
+  public static ApiDAO getApiDAO() {
+    return apiDAO;
   }
 }

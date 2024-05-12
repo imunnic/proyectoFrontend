@@ -3,8 +3,7 @@ package DAO;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entidades.MixIns;
-import entidades.Persona;
+import entidades.Profesor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +17,7 @@ import java.util.List;
 public class ApiDAO<T> {
   private ObjectMapper mapper;
   private String token;
+  private String username;
 
   private String getApiUrl() {
     return "https://micolegio-c6e07df12596.herokuapp.com/api";
@@ -25,6 +25,14 @@ public class ApiDAO<T> {
 
   public String getToken() {
     return token;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getUsername() {
+    return this.username;
   }
 
   private ObjectMapper getMapper() {
@@ -66,6 +74,8 @@ public class ApiDAO<T> {
       }
       JsonNode jsonNode = mapper.readTree(response.toString());
       token = jsonNode.get("token").asText();
+      setUsername(jsonNode.get("username").asText());
+
       con.disconnect();
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -74,6 +84,33 @@ public class ApiDAO<T> {
     return (!token.equals(""));
   }
 
+  public Profesor getProfesor(){
+    Profesor profesor = new Profesor();
+    try {
+      URL url = new URL(getApiUrl() + "/usuarios/search/findByUsername?username=" + getUsername());
+      HttpURLConnection con = (HttpURLConnection) url.openConnection();
+      con.setRequestMethod("GET");
+      con.setConnectTimeout(5000);
+      con.setReadTimeout(5000);
+      con.setRequestProperty("Authorization", "Bearer " + token);
+
+      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+      JsonNode nodeElementos = getMapper().readTree(in);
+      profesor.setId(nodeElementos.findValue("profesor").asInt());
+      profesor.setNombre(nodeElementos.findValue("nombre").asText());
+      profesor.setApellido(nodeElementos.findValue("apellido").asText());
+      profesor.setRol(nodeElementos.findValue("rol").asText());
+      profesor.setUsername(nodeElementos.findValue("username").asText());
+      profesor.setLink(nodeElementos.get("_links").get("self").get("href").asText());
+
+      con.disconnect();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return profesor;
+  }
 
   public List<T> getEntidades(Class<T> tipo, String path) {
     List<T> entidades = new ArrayList<T>();

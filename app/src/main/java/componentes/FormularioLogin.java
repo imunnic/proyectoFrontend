@@ -61,13 +61,11 @@ public class FormularioLogin extends JPanel {
     botonLogin = new BotonRedondeado("Login");
     botonLogin.setBackground(Color.WHITE);
     botonLogin.addActionListener(new ActionListener() {
-        ApiDAO api = new ApiDAO<>();
       @Override
       public void actionPerformed(ActionEvent e) {
         try{
-          api.login(getUsuario(),getPassword());
-          App.loggear(api.getToken());
-          JOptionPane.showMessageDialog(null, "Login Correcto.", "Alerta", JOptionPane.WARNING_MESSAGE);
+          App.getApiDAO().login(getUsuario(),getPassword());
+          App.loggear(App.getApiDAO().getToken());
 
         } catch (Exception exception){
           JOptionPane.showMessageDialog(null, "Error en el login", "Alerta", JOptionPane.WARNING_MESSAGE);
