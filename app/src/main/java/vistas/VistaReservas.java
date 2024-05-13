@@ -1,9 +1,10 @@
 package vistas;
 
 import DAO.ApiDAO;
-import componentes.Footer;
-import componentes.Header;
+import com.esotericsoftware.tablelayout.swing.Table;
+import componentes.*;
 import entidades.Profesor;
+import es.lanyu.ui.swing.SimpleJTable;
 import org.jdatepicker.JDateComponentFactory;
 import org.jdatepicker.JDatePanel;
 import org.jdatepicker.JDatePicker;
@@ -14,13 +15,23 @@ import proyectofrontend.App;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VistaReservas extends JFrame {
   private int ancho = 700, alto = 700;
   private int headerHeight = (int) (0.1 * alto);
   private int footerHeight = (int) (0.1 * alto);
   private Profesor profesor;
-  private JLabel texto;
+  private List<String> reservas;
+
+  public List<String> getReservas() {
+    return reservas;
+  }
+
+  public void setReservas(List<String> reservas) {
+    this.reservas = reservas;
+  }
 
   private void setProfesor(Profesor profesor) {
     this.profesor = profesor;
@@ -31,29 +42,38 @@ public class VistaReservas extends JFrame {
   }
 
   public VistaReservas() {
+    reservas = new ArrayList<>();
+    reservas.add("hola");
+    reservas.add("dola");
+
 
     JPanel headerPanel = new Header("MiColegio");
     headerPanel.setPreferredSize(new Dimension(1, headerHeight));
 
     JPanel centralPanel = new JPanel();
-    centralPanel.setLayout(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.fill = GridBagConstraints.VERTICAL;
-    gbc.insets = new Insets(10, 10, 10, 10);
-    gbc.anchor = GridBagConstraints.NORTH;
-    gbc.weightx = 0.2;
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    /*centralPanel.add(componente, gbc);*/
-    texto = new JLabel("Bienvenido a reservas: " + getProfesor());
-    centralPanel.add(texto, gbc);
 
-    gbc.weightx = 0.8;
-    gbc.gridx = 1;
+    centralPanel.setLayout(new GridBagLayout());
+    centralPanel.setMinimumSize(new Dimension(0,800));
+    GridBagConstraints configuracion = configurarGridBag();
+
     /*centralPanel.add(componente, gbc);*/
-    JDateComponentFactory factory = new JDateComponentFactory();
-    JDatePicker datePicker = factory.createJDatePicker();
-    centralPanel.add((Component) datePicker, gbc);
+    FormularioReserva formularioReserva = new FormularioReserva();
+    centralPanel.add(formularioReserva, configuracion);
+
+/*    SimpleJTable
+        reservas = new SimpleJTable(getReservas()
+        , new String[]{"Franja","Grupo", "Asignatura", "Lugar"},
+        r -> "F", r -> "G", r -> "A", r -> "L");*/
+    SelectorSemana selectorSemana = new SelectorSemana();
+    TablaReservas reservas = new TablaReservas();
+    configuracion.weightx = 0.8;
+    configuracion.gridx = 1;
+    JPanel calendario = new JPanel();
+    calendario.setLayout(new BorderLayout());
+    calendario.add(selectorSemana, BorderLayout.NORTH);
+    calendario.add(reservas, BorderLayout.CENTER);
+    centralPanel.add(calendario, configuracion);
+    /*centralPanel.add(componente, gbc);*/
 
     JPanel footerPanel = new Footer("@imunnic");
     footerPanel.setPreferredSize(new Dimension(1, footerHeight));
@@ -75,7 +95,17 @@ public class VistaReservas extends JFrame {
 
   public void cargaProfesor(){
     setProfesor(App.getApiDAO().getProfesor());
-    texto.setText(getProfesor().toString());
+  }
+
+  public GridBagConstraints configurarGridBag(){
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.insets = new Insets(10, 10, 10, 10);
+    gbc.anchor = GridBagConstraints.NORTH;
+    gbc.weightx = 0.2;
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    return gbc;
   }
 
 }

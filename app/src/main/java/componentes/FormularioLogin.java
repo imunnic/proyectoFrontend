@@ -68,6 +68,7 @@ public class FormularioLogin extends JPanel {
           App.loggear(App.getApiDAO().getToken());
 
         } catch (Exception exception){
+          System.out.println(exception.toString());
           JOptionPane.showMessageDialog(null, "Error en el login", "Alerta", JOptionPane.WARNING_MESSAGE);
         }
       }
