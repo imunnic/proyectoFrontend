@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VistaReservas extends JFrame {
-  private int ancho = 700, alto = 700;
+  private int ancho = 1000, alto = 1000;
   private int headerHeight = (int) (0.1 * alto);
   private int footerHeight = (int) (0.1 * alto);
   private Profesor profesor;
