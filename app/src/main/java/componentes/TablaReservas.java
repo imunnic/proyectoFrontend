@@ -29,29 +29,10 @@ public class TablaReservas extends JPanel {
     datos = new List[FRANJASHORARIAS.length][DIASSSEMANA.length];
 
     inicializarDatos();
-    model = new DefaultTableModel(datos, DIASSSEMANA) {
-      @Override
-      public boolean isCellEditable(int row, int column) {
-        return false;
-      }
-    };
-
+    model = modeloDeTabla();
     tabla = new JTable(model);
-
-    //configuracion de celdas
-    tabla.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
-      @Override
-      public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        JLabel label = new JLabel((String) ((List<?>) value).get(0));
-        label.setHorizontalAlignment(JLabel.CENTER);
-        if (isSelected) {
-          label.setBackground(table.getSelectionBackground());
-        } else {
-          label.setBackground(table.getBackground());
-        }
-        return label;
-      }
-    });
+    //render de celdas de horario
+    tabla.getColumnModel().getColumn(0).setCellRenderer(celdasRender());
 
     //configuracion detalles de tabla
     configurarTabla();
@@ -61,6 +42,7 @@ public class TablaReservas extends JPanel {
     JScrollPane scrollPane = new JScrollPane(tabla);
     add(scrollPane, BorderLayout.CENTER);
   }
+
   public void pintarReservas() {
     for (Reserva reserva : reservas) {
       int column =
@@ -92,5 +74,30 @@ public class TablaReservas extends JPanel {
     DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
     centerRenderer.setHorizontalAlignment(JLabel.CENTER);
     tabla.setDefaultRenderer(Object.class, centerRenderer);
+  }
+
+  private DefaultTableCellRenderer celdasRender(){
+    return new DefaultTableCellRenderer() {
+      @Override
+      public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        JLabel label = new JLabel((String) ((List<?>) value).get(0));
+        label.setHorizontalAlignment(JLabel.CENTER);
+        if (isSelected) {
+          label.setBackground(table.getSelectionBackground());
+        } else {
+          label.setBackground(table.getBackground());
+        }
+        return label;
+      }
+    };
+  }
+
+  private DefaultTableModel modeloDeTabla(){
+    return new DefaultTableModel(datos, DIASSSEMANA) {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return false;
+      }
+    };
   }
 }
