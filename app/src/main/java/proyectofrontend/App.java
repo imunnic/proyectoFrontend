@@ -5,10 +5,12 @@ package proyectofrontend;
 
 import DAO.ApiDAO;
 import componentes.LoggedListener;
+import entidades.Reserva;
 import vistas.VistaLogin;
 import vistas.VistaReservas;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +18,21 @@ public class App {
   private static String token;
   private static ApiDAO apiDAO = new ApiDAO<>();
   private static boolean logged;
+  private static final LocalDate hoy = LocalDate.now();
   private static List<LoggedListener> loggedListeners = new ArrayList<>();
-  public static void main(String[] args) {
+  private static List<Reserva> reservasApi;
 
+  public static void setReservasApi(List<Reserva> reservasApi) {
+    App.reservasApi = reservasApi;
+  }
+
+  public static LocalDate getHoy() {
+    return hoy;
+  }
+  public static ApiDAO getApiDAO() {
+    return apiDAO;
+  }
+  public static void main(String[] args) {
     VistaLogin login = new VistaLogin();
     VistaReservas reservas = new VistaReservas();
 
@@ -55,7 +69,5 @@ public class App {
     }
   }
 
-  public static ApiDAO getApiDAO() {
-    return apiDAO;
-  }
+
 }

@@ -15,6 +15,10 @@ import proyectofrontend.App;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +26,7 @@ public class VistaReservas extends JFrame {
   private int ancho = 1000, alto = 1000;
   private int headerHeight = (int) (0.1 * alto);
   private int footerHeight = (int) (0.1 * alto);
+
   private Profesor profesor;
   private List<String> reservas;
 
@@ -64,8 +69,8 @@ public class VistaReservas extends JFrame {
         reservas = new SimpleJTable(getReservas()
         , new String[]{"Franja","Grupo", "Asignatura", "Lugar"},
         r -> "F", r -> "G", r -> "A", r -> "L");*/
-    SelectorSemana selectorSemana = new SelectorSemana();
     TablaReservas reservas = new TablaReservas();
+    SelectorSemana selectorSemana = new SelectorSemana(reservas);
     configuracion.weightx = 0.8;
     configuracion.gridx = 1;
     JPanel calendario = new JPanel();

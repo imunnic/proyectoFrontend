@@ -23,7 +23,6 @@ public class FormularioReserva extends JPanel {
     JLabel asignatura = new JLabel("Asignatura");
     JLabel grupo = new JLabel("Grupo");
     JLabel franja = new JLabel("Franja Horaria");
-
     add(fecha);
     add((Component) selectorFecha);
     add(grupo);
