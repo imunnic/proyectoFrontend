@@ -1,5 +1,7 @@
 package entidades;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
 public class Reserva {
@@ -11,10 +13,11 @@ public class Reserva {
   private LocalDate fecha;
   private int hora;
 
+  @JsonProperty("identificacion")
   public Long getId() {
     return id;
   }
-
+  @JsonProperty("identificacion")
   public void setId(Long id) {
     this.id = id;
   }
@@ -66,6 +69,7 @@ public class Reserva {
   public int getHora() {
     return hora;
   }
+
   public Long getIdentificacion() {
     return getId();
   }
@@ -82,4 +86,8 @@ public class Reserva {
     setHora(hora);
   }
 
+  @Override
+  public String toString() {
+    return "ID: " + getIdentificacion();
+  }
 }

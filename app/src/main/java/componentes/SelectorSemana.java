@@ -7,12 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 
-public class SelectorSemana extends  JPanel{
+public class SelectorSemana extends JPanel {
   private JButton btnAnterior;
   private JButton btnSiguiente;
   private LocalDate inicioSemana;
@@ -41,7 +43,7 @@ public class SelectorSemana extends  JPanel{
     return semanaActual;
   }
 
-  public SelectorSemana(TablaReservas tabla){
+  public SelectorSemana(TablaReservas tabla) {
     this.tabla = tabla;
     formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     btnAnterior = new JButton("Semana Anterior");
@@ -67,22 +69,37 @@ public class SelectorSemana extends  JPanel{
     add(btnSiguiente);
 
   }
-  private void semanaSiguiente(){
+
+  private void semanaSiguiente() {
     setFinSemana(getFinSemana().plusWeeks(1));
     setInicioSemana(getInicioSemana().plusWeeks(1));
     actualizarTextoSemana();
+    cargarReservas();
   }
 
-  private void semanaAnterior(){
+  private void semanaAnterior() {
     setInicioSemana(getInicioSemana().minusWeeks(1));
     setFinSemana(getFinSemana().minusWeeks(1));
     actualizarTextoSemana();
-    String texto = "<html>Grupo: G1<br>Asignatura: A1</html>";
-    tabla.model.setValueAt(texto,1,2);
+    cargarReservas();
   }
 
-  private void actualizarTextoSemana(){
+  private void actualizarTextoSemana() {
     getSemanaActual().setText(inicioSemana.format(formatter) + " : " + finSemana.format(formatter));
   }
 
+  public void cargarReservas(){
+    try {
+      App.setReservasApi(App.getApiDAO()
+          .obtenerReservas(App.getProfesor().getId(), getInicioSemana(),
+              getFinSemana()));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+    tabla.pintarReservas();
+  }
 }

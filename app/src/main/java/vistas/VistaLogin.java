@@ -42,7 +42,8 @@ public class VistaLogin extends JFrame {
     setSize(ancho, alto);
     setVisible(true);
   }
-  public void autoclick(){
+
+  public void autoclick() {
     login.getBotonLogin().doClick();
   }
 

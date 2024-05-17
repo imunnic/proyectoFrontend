@@ -12,7 +12,7 @@ public class FormularioReserva extends JPanel {
   JComboBox<String> selectorFranajaHoraria;
   JComboBox<String> selectorAsignatura;
 
-  public FormularioReserva(){
+  public FormularioReserva() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     JDateComponentFactory factory = new JDateComponentFactory();
     selectorFecha = factory.createJDatePicker();

@@ -63,13 +63,14 @@ public class FormularioLogin extends JPanel {
     botonLogin.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        try{
-          App.getApiDAO().login(getUsuario(),getPassword());
+        try {
+          App.getApiDAO().login(getUsuario(), getPassword());
           App.loggear(App.getApiDAO().getToken());
 
-        } catch (Exception exception){
+        } catch (Exception exception) {
           System.out.println(exception.toString());
-          JOptionPane.showMessageDialog(null, "Error en el login", "Alerta", JOptionPane.WARNING_MESSAGE);
+          JOptionPane.showMessageDialog(null, "Error en el login", "Alerta",
+              JOptionPane.WARNING_MESSAGE);
         }
       }
     });

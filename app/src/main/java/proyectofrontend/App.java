@@ -5,6 +5,7 @@ package proyectofrontend;
 
 import DAO.ApiDAO;
 import componentes.LoggedListener;
+import entidades.Profesor;
 import entidades.Reserva;
 import vistas.VistaLogin;
 import vistas.VistaReservas;
@@ -16,11 +17,24 @@ import java.util.List;
 
 public class App {
   private static String token;
-  private static ApiDAO apiDAO = new ApiDAO<>();
+  private static ApiDAO apiDAO = new ApiDAO();
   private static boolean logged;
   private static final LocalDate hoy = LocalDate.now();
   private static List<LoggedListener> loggedListeners = new ArrayList<>();
   private static List<Reserva> reservasApi;
+  private static Profesor profesor;
+
+  public static Profesor getProfesor() {
+    return profesor;
+  }
+
+  public static void setProfesor(Profesor profesor) {
+    App.profesor = profesor;
+  }
+
+  public static List<Reserva> getReservasApi() {
+    return reservasApi;
+  }
 
   public static void setReservasApi(List<Reserva> reservasApi) {
     App.reservasApi = reservasApi;
@@ -29,9 +43,11 @@ public class App {
   public static LocalDate getHoy() {
     return hoy;
   }
+
   public static ApiDAO getApiDAO() {
     return apiDAO;
   }
+
   public static void main(String[] args) {
     VistaLogin login = new VistaLogin();
     VistaReservas reservas = new VistaReservas();
@@ -52,7 +68,8 @@ public class App {
     login.autoclick();
 
   }
-  public static void loggear(String token){
+
+  public static void loggear(String token) {
     App.token = token;
     logged = true;
     notifyLoggedListeners(logged);

@@ -3,18 +3,26 @@ package DAO;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import entidades.Profesor;
+import entidades.Reserva;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApiDAO<T> {
+public class ApiDAO {
   private ObjectMapper mapper;
   private String token;
   private String username;
@@ -39,14 +47,15 @@ public class ApiDAO<T> {
     return mapper;
   }
 
-  public ApiDAO(){
+  public ApiDAO() {
     token = "";
     mapper = new ObjectMapper();
     getMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    getMapper().registerModule(new JavaTimeModule());
     /*getMapper().addMixIn(Persona.class, MixIns.Personas.class);*/
   }
 
-  public boolean login(String usuario, String password){
+  public boolean login(String usuario, String password) {
     try {
       URL url = new URL(getApiUrl() + "/auth/login");
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -59,7 +68,8 @@ public class ApiDAO<T> {
       con.setRequestProperty("Accept", "application/json");
 
       // Crear el cuerpo de la solicitud en formato JSON
-      String credenciales = "{\"username\": \"" + usuario + "\", \"password\": \"" + password + "\"}";
+      String credenciales =
+          "{\"username\": \"" + usuario + "\", \"password\": \"" + password + "\"}";
 
       // Escribir el cuerpo de la solicitud en la conexión
       OutputStream os = con.getOutputStream();
@@ -84,7 +94,7 @@ public class ApiDAO<T> {
     return (!token.equals(""));
   }
 
-  public Profesor getProfesor(){
+  public Profesor getProfesor() {
     Profesor profesor = new Profesor();
     try {
       URL url = new URL(getApiUrl() + "/usuarios/search/findByUsername?username=" + getUsername());
@@ -112,28 +122,62 @@ public class ApiDAO<T> {
     return profesor;
   }
 
-  public List<T> getEntidades(Class<T> tipo, String path) {
-    List<T> entidades = new ArrayList<T>();
+//  public List<T> getEntidades(Class<T> tipo, String path) {
+//    List<T> entidades = new ArrayList<T>();
+//    try {
+//      URL url = new URL(getApiUrl() + path);
+//      HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//      con.setRequestMethod("GET");
+//      con.setConnectTimeout(5000);
+//      con.setReadTimeout(5000);
+//      con.setRequestProperty("Authorization", "Bearer " + token);
+//
+//      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//
+//      JsonNode nodeElementos = getMapper().readTree(in).findValue(path);
+//      for (JsonNode nodo : nodeElementos) {
+//        T entidad = getMapper().readValue(nodo.traverse(), tipo);
+//        entidades.add(entidad);
+//      }
+//    } catch (IOException e) {
+//      // TODO Auto-generated catch block
+//      e.printStackTrace();
+//    }
+//    return entidades;
+//  }
+
+
+  public List<Reserva> obtenerReservas(int profesor, LocalDate inicio, LocalDate fin)
+      throws IOException, InterruptedException, URISyntaxException {
+    List<Reserva> reservas = new ArrayList<>();
+
+    // Construir la URL con los parámetros
+    String url = String.format("%s/reservas/search/reservas-profesor-fecha?profesorId=%d&fechaInicio=%s&fechaFin=%s", getApiUrl(), profesor,
+        inicio.toString(), fin.toString());
+
+    URL enlace = new URL(url);
     try {
-      URL url = new URL(getApiUrl() + path);
-      HttpURLConnection con = (HttpURLConnection) url.openConnection();
+      HttpURLConnection con = (HttpURLConnection) enlace.openConnection();
       con.setRequestMethod("GET");
       con.setConnectTimeout(5000);
       con.setReadTimeout(5000);
       con.setRequestProperty("Authorization", "Bearer " + token);
 
       BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-      JsonNode nodeElementos = getMapper().readTree(in).findValue(path);
-      for (JsonNode nodo : nodeElementos) {
-        T entidad = getMapper().readValue(nodo.traverse(), tipo);
-        entidades.add(entidad);
+      JsonNode nodeElementos = getMapper().readTree(in).findValue("reservas");
+      if (nodeElementos == null) {
+        reservas = null;
+      } else {
+        for (JsonNode nodo : nodeElementos) {
+          Reserva reserva = getMapper().readValue(nodo.traverse(), Reserva.class);
+          reservas.add(reserva);
+        }
       }
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      } catch(IOException e){
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    return reservas;
     }
-    return entidades;
-  }
 
 }

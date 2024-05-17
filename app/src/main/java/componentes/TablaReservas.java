@@ -13,18 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TablaReservas extends JPanel {
-  private List<Reserva> reservas;
-  private final  String[] DIASSSEMANA = {"", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
-  private final  String[] FRANJASHORARIAS = {"9:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00"};
+  private final String[] DIASSSEMANA = {"", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
+  private final String[] FRANJASHORARIAS =
+      {"9:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00"};
   private List<String>[][] datos;
   private JTable tabla;
   public DefaultTableModel model;
   public TablaReservas() {
-    Reserva reseva = new Reserva(1,1,1,1, LocalDate.now(),9);
-    reservas = new ArrayList<>();
-    reservas.add(reseva);
-
-    App.setReservasApi(reservas);
     setLayout(new BorderLayout());
     datos = new List[FRANJASHORARIAS.length][DIASSSEMANA.length];
 
@@ -37,24 +32,26 @@ public class TablaReservas extends JPanel {
     //configuracion detalles de tabla
     configurarTabla();
 
-    pintarReservas();
-
     JScrollPane scrollPane = new JScrollPane(tabla);
     add(scrollPane, BorderLayout.CENTER);
   }
 
   public void pintarReservas() {
-    for (Reserva reserva : reservas) {
-      int column =
-          reserva.getFecha().getDayOfWeek().getValue();
-      int row =
-          reserva.getHora() - 9;
-      String texto = "<html>Grupo " + reserva.getGrupo() + "<br>Asignatura " + reserva.getAsignatura() + "</html>";
-      model.setValueAt(texto, row, column);
+    limpiarCeldas();
+    if (App.getReservasApi() == null) {
+
+    } else {
+      for (Reserva reserva : App.getReservasApi()) {
+        int column = reserva.getFecha().getDayOfWeek().getValue();
+        int row = reserva.getHora() - 9;
+        String texto =
+            "<html>Grupo " + reserva.getGrupo() + "<br>Asignatura " + reserva.getAsignatura() + "</html>";
+        model.setValueAt(texto, row, column);
+      }
     }
   }
 
-  private void inicializarDatos(){
+  private void inicializarDatos() {
     for (int i = 0; i < FRANJASHORARIAS.length; i++) {
       for (int j = 0; j < DIASSSEMANA.length; j++) {
         if (j == 0) {
@@ -66,7 +63,7 @@ public class TablaReservas extends JPanel {
     }
   }
 
-  private void configurarTabla(){
+  private void configurarTabla() {
     int altoFila = 50;
     tabla.setRowHeight(altoFila);
     tabla.getTableHeader().setReorderingAllowed(false);
@@ -76,10 +73,11 @@ public class TablaReservas extends JPanel {
     tabla.setDefaultRenderer(Object.class, centerRenderer);
   }
 
-  private DefaultTableCellRenderer celdasRender(){
+  private DefaultTableCellRenderer celdasRender() {
     return new DefaultTableCellRenderer() {
       @Override
-      public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+      public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+          boolean hasFocus, int row, int column) {
         JLabel label = new JLabel((String) ((List<?>) value).get(0));
         label.setHorizontalAlignment(JLabel.CENTER);
         if (isSelected) {
@@ -92,7 +90,7 @@ public class TablaReservas extends JPanel {
     };
   }
 
-  private DefaultTableModel modeloDeTabla(){
+  private DefaultTableModel modeloDeTabla() {
     return new DefaultTableModel(datos, DIASSSEMANA) {
       @Override
       public boolean isCellEditable(int row, int column) {
@@ -100,4 +98,14 @@ public class TablaReservas extends JPanel {
       }
     };
   }
+
+  private void limpiarCeldas() {
+    for (int i = 0; i < model.getRowCount(); i++) {
+      for (int j = 1; j < model.getColumnCount(); j++) {
+        model.setValueAt("", i, j);
+      }
+    }
+  }
+
+
 }
