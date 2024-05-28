@@ -1,11 +1,12 @@
 package DAO;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import entidades.Profesor;
-import entidades.Reserva;
+import entidades.*;
+import proyectofrontend.App;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 public class ApiDAO {
   private ObjectMapper mapper;
@@ -94,8 +96,8 @@ public class ApiDAO {
     return (!token.equals(""));
   }
 
-  public Profesor getProfesor() {
-    Profesor profesor = new Profesor();
+  public Usuario getUsuario() {
+    Usuario usuario = new Usuario();
     try {
       URL url = new URL(getApiUrl() + "/usuarios/search/findByUsername?username=" + getUsername());
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -107,19 +109,19 @@ public class ApiDAO {
       BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
       JsonNode nodeElementos = getMapper().readTree(in);
-      profesor.setId(nodeElementos.findValue("profesor").asInt());
-      profesor.setNombre(nodeElementos.findValue("nombre").asText());
-      profesor.setApellido(nodeElementos.findValue("apellido").asText());
-      profesor.setRol(nodeElementos.findValue("rol").asText());
-      profesor.setUsername(nodeElementos.findValue("username").asText());
-      profesor.setLink(nodeElementos.get("_links").get("self").get("href").asText());
+      usuario.setId(nodeElementos.findValue("profesor").asInt());
+      usuario.setNombre(nodeElementos.findValue("nombre").asText());
+      usuario.setApellido(nodeElementos.findValue("apellido").asText());
+      usuario.setRol(nodeElementos.findValue("rol").asText());
+      usuario.setUsername(nodeElementos.findValue("username").asText());
+      usuario.setLink(nodeElementos.get("_links").get("self").get("href").asText());
 
       con.disconnect();
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    return profesor;
+    return usuario;
   }
 
 //  public List<T> getEntidades(Class<T> tipo, String path) {
@@ -174,10 +176,91 @@ public class ApiDAO {
         }
       }
       } catch(IOException e){
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
     return reservas;
+  }
+
+  public List<Asignatura> getAsignaturas() {
+    //TODO poner un return
+    try {
+      return mapper.readValue(new File("src/main/resources/asignaturas.json"), new TypeReference<List<Asignatura>>() {});
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    return null;
+  }
+
+  public List<Profesor> getProfesores() {
+    //TODO poner un return
+    try {
+      return mapper.readValue(new File("src/main/resources/profesores.json"), new TypeReference<List<Profesor>>() {});
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public List<Grupo> getGrupos() {
+    //TODO poner un return
+    try {
+      return mapper.readValue(new File("src/main/resources/grupos.json"), new TypeReference<List<Grupo>>() {});
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+
+  public Asignatura obtenerAsignaturaPorId(int id) {
+    //TODO poner un return
+    for (Asignatura asignatura : App.getAsignaturas()) {
+      if (asignatura.getId() == id) {
+        return asignatura;
+      }
+    }
+    return null;
+  }
+
+  public Grupo obtenerGrupoPorId(int id) {
+    //TODO poner un return
+    for (Grupo grupo : App.getGrupos()) {
+      if (grupo.getId() == id) {
+        return grupo;
+      }
+    }
+    return null;
+  }
+
+  public Lugar obtenerLugarPorId(int id) {
+    //TODO poner un return
+    for (Lugar lugar : App.getLugares()) {
+      if (lugar.getId() == id) {
+        return lugar;
+      }
+    }
+    return null;
+  }
+
+  public Asignatura obtenerAsignaturaPorNombre(String nombre) {
+    //TODO poner un return
+    for (Asignatura asignatura : App.getAsignaturas()) {
+      if (asignatura.getNombre().equals(nombre)) {
+        return asignatura;
+      }
+    }
+    return null;
+  }
+
+  public Profesor obtenerProfesorPorId(int id) {
+    //TODO poner un return
+    for (Profesor profesor : App.getProfesores()) {
+      if (profesor.getId() == id) {
+        return profesor;
+      }
+    }
+    return null;
+  }
+
 
 }

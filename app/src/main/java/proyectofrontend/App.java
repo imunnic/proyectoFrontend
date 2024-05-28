@@ -5,8 +5,7 @@ package proyectofrontend;
 
 import DAO.ApiDAO;
 import componentes.LoggedListener;
-import entidades.Profesor;
-import entidades.Reserva;
+import entidades.*;
 import vistas.VistaLogin;
 import vistas.VistaReservas;
 
@@ -22,14 +21,18 @@ public class App {
   private static final LocalDate hoy = LocalDate.now();
   private static List<LoggedListener> loggedListeners = new ArrayList<>();
   private static List<Reserva> reservasApi;
-  private static Profesor profesor;
+  private static Usuario usuario;
+  private static List<Profesor> profesores;
+  private static List<Asignatura> asignaturas;
+  private static List<Grupo> grupos;
+  private static List<Lugar> lugares;
 
-  public static Profesor getProfesor() {
-    return profesor;
+  public static Usuario getUsuario() {
+    return usuario;
   }
 
-  public static void setProfesor(Profesor profesor) {
-    App.profesor = profesor;
+  public static void setUsuario(Usuario usuario) {
+    App.usuario = usuario;
   }
 
   public static List<Reserva> getReservasApi() {
@@ -48,7 +51,26 @@ public class App {
     return apiDAO;
   }
 
+  public static List<Asignatura> getAsignaturas() {
+    return asignaturas;
+  }
+
+  public static List<Grupo> getGrupos() {
+    return grupos;
+  }
+
+  public static List<Lugar> getLugares() {
+    return lugares;
+  }
+
+  public static List<Profesor> getProfesores() {
+    return profesores;
+  }
+
   public static void main(String[] args) {
+    App.asignaturas = getApiDAO().getAsignaturas();
+    App.profesores = getApiDAO().getProfesores();
+    App.grupos = getApiDAO().getGrupos();
     VistaLogin login = new VistaLogin();
     VistaReservas reservas = new VistaReservas();
 
@@ -85,6 +107,5 @@ public class App {
       listener.onLoggedChanged(logged);
     }
   }
-
 
 }

@@ -1,28 +1,12 @@
 package vistas;
 
-import DAO.ApiDAO;
-import com.esotericsoftware.tablelayout.swing.Table;
 import componentes.*;
 import entidades.Profesor;
 import entidades.Reserva;
-import es.lanyu.ui.swing.SimpleJTable;
-import org.jdatepicker.JDateComponentFactory;
-import org.jdatepicker.JDatePanel;
-import org.jdatepicker.JDatePicker;
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
 import proyectofrontend.App;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.List;
 
 public class VistaReservas extends JFrame {
@@ -32,6 +16,7 @@ public class VistaReservas extends JFrame {
   private List<Reserva> reservas;
   private TablaReservas tablaReservas;
   private SelectorSemana selectorSemana;
+  private FormularioReserva formularioReserva;
 
   public List<Reserva> getReservas() {
     return reservas;
@@ -54,7 +39,7 @@ public class VistaReservas extends JFrame {
     centralPanel.setMinimumSize(new Dimension(0, 800));
     GridBagConstraints configuracion = configurarGridBag();
 
-    FormularioReserva formularioReserva = new FormularioReserva();
+    formularioReserva = new FormularioReserva();
     centralPanel.add(formularioReserva, configuracion);
 
     tablaReservas = new TablaReservas();
@@ -80,15 +65,17 @@ public class VistaReservas extends JFrame {
   }
 
   public void iniciarVistasReservas() {
-    cargaProfesor();
+    cargaUsuario();
     setSize(ancho, alto);
     setVisible(true);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     selectorSemana.cargarReservas();
   }
 
-  public void cargaProfesor() {
-    App.setProfesor((App.getApiDAO().getProfesor()));
+  public void cargaUsuario() {
+    App.setUsuario((App.getApiDAO().getUsuario()));
+    Profesor profesor = App.getApiDAO().obtenerProfesorPorId(App.getUsuario().getId());
+    formularioReserva.iniciarFormulario(profesor);
   }
 
   public GridBagConstraints configurarGridBag() {

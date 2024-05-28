@@ -1,0 +1,43 @@
+[
+      {
+        "id":0,
+        "nombre":"Rodrigo",
+        "apellido":"De Dios",
+        "asignaturas":[]
+      },
+      {
+          "id": 1,
+          "nombre": "Alejandro",
+          "apellido": "Martínez",
+          "avatar": "https://randomuser.me/api/portraits/men/5.jpg",
+          "asignaturas": [1, 2]
+      },
+      {
+          "id": 2,
+          "nombre": "Sofía",
+          "apellido": "García",
+          "avatar": "https://randomuser.me/api/portraits/women/5.jpg",
+          "asignaturas": [3, 4]
+      },
+      {
+          "id": 3,
+          "nombre": "Javier",
+          "apellido": "López",
+          "avatar": "https://randomuser.me/api/portraits/men/10.jpg",
+          "asignaturas": [5, 6]
+      },
+      {
+          "id": 4,
+          "nombre": "María",
+          "apellido": "Rodríguez",
+          "avatar": "https://randomuser.me/api/portraits/women/10.jpg",
+          "asignaturas": [7, 8]
+      },
+      {
+          "id": 5,
+          "nombre": "Carlos",
+          "apellido": "Fernández",
+          "avatar": "https://randomuser.me/api/portraits/men/15.jpg",
+          "asignaturas": [9, 10]
+      }
+]

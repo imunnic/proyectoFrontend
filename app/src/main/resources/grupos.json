@@ -1,0 +1,22 @@
+[
+    {
+      "id": 1,
+      "nombre": "Grupo 1",
+      "cantidad_alumnos": 25
+    },
+    {
+      "id": 2,
+      "nombre": "Grupo 2",
+      "cantidad_alumnos": 27
+    },
+    {
+      "id": 3,
+      "nombre": "Grupo 3",
+      "cantidad_alumnos": 22
+    },
+    {
+      "id": 4,
+      "nombre": "Grupo 4",
+      "cantidad_alumnos": 30
+    }
+]

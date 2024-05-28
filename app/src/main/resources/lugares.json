@@ -1,0 +1,116 @@
+[
+    {
+      "id": 1,
+      "nombre": "Aula 101",
+      "capacidad": 27,
+      "tipo":"Aula"
+    },
+    {
+      "id": 2,
+      "nombre": "Laboratorio de Matemáticas",
+      "capacidad": 30,
+      "tipo":"Aula"
+    },
+    {
+      "id": 3,
+      "nombre": "Aula 202",
+      "capacidad": 28,
+      "tipo":"Aula"
+    },
+    {
+      "id": 4,
+      "nombre": "Laboratorio de Física",
+      "capacidad": 26,
+      "tipo":"Aula"
+    },
+    {
+      "id": 5,
+      "nombre": "Aula 303",
+      "capacidad": 25,
+      "tipo":"Aula"
+    },
+    {
+      "id": 6,
+      "nombre": "Biblioteca",
+      "capacidad": 30,
+      "tipo":"Aula"
+    },
+    {
+      "id": 7,
+      "nombre": "Aula 404",
+      "capacidad": 29,
+      "tipo":"Aula"
+    },
+    {
+      "id": 8,
+      "nombre": "Sala de Estudio",
+      "capacidad": 27,
+      "tipo":"Aula"
+    },
+    {
+      "id": 9,
+      "nombre": "Aula 505",
+      "capacidad": 26,
+      "tipo":"Aula"
+    },
+    {
+      "id": 10,
+      "nombre": "Sala de Conferencias",
+      "capacidad": 25,
+      "tipo":"Aula"
+    },
+    {
+      "id": 11,
+      "nombre": "Aula 606",
+      "capacidad": 30,
+      "tipo":"Aula"
+    },
+    {
+      "id": 12,
+      "nombre": "Sala de Mapas",
+      "capacidad": 28,
+      "tipo":"Aula"
+    },
+    {
+      "id": 13,
+      "nombre": "Laboratorio de Biología",
+      "capacidad": 29,
+      "tipo":"Aula"
+    },
+    {
+      "id": 14,
+      "nombre": "Laboratorio de Química",
+      "capacidad": 27,
+      "tipo":"Aula"
+    },
+    {
+      "id": 15,
+      "nombre": "Aula 707",
+      "capacidad": 25,
+      "tipo":"Aula"
+    },
+    {
+      "id": 16,
+      "nombre": "Patio Central",
+      "capacidad": 30,
+      "tipo":"Patio"
+    },
+    {
+      "id": 17,
+      "nombre": "Gimnasio",
+      "capacidad": 28,
+      "tipo":"Patio"
+    },
+    {
+      "id": 18,
+      "nombre": "Campo de Fútbol",
+      "capacidad": 26,
+      "tipo":"Patio"
+    },
+    {
+      "id": 19,
+      "nombre": "Pista de Atletismo",
+      "capacidad": 29,
+      "tipo":"Patio"
+    }
+  ]
