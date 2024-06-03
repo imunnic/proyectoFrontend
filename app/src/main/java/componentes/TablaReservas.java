@@ -1,5 +1,6 @@
 package componentes;
 
+import DAO.ReservaController;
 import entidades.Reserva;
 import proyectofrontend.App;
 
@@ -7,6 +8,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +35,8 @@ public class TablaReservas extends JPanel {
     //configuracion detalles de tabla
     configurarTabla();
 
+    agregarMouseListener();
+
     JScrollPane scrollPane = new JScrollPane(tabla);
     add(scrollPane, BorderLayout.CENTER);
   }
@@ -45,7 +50,9 @@ public class TablaReservas extends JPanel {
         int column = reserva.getFecha().getDayOfWeek().getValue();
         int row = reserva.getHora() - 9;
         String texto =
-            "<html>Grupo " + reserva.getGrupo() + "<br>Asignatura " + reserva.getAsignatura() + "</html>";
+            "<html> " + App.getApiDAO().obtenerGrupoPorId(reserva.getGrupo()).getNombre() +
+            "<br>" + App.getApiDAO().obtenerAsignaturaPorId(reserva.getAsignatura()).getNombre() +
+            "</html>";
         model.setValueAt(texto, row, column);
       }
     }
@@ -105,6 +112,27 @@ public class TablaReservas extends JPanel {
         model.setValueAt("", i, j);
       }
     }
+  }
+
+  private void agregarMouseListener() {
+    tabla.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        int row = tabla.rowAtPoint(e.getPoint());
+        int column = tabla.columnAtPoint(e.getPoint());
+        if (row >= 0 && column > 0) {
+          Object value = model.getValueAt(row, column);
+          if (value == null || value.toString().trim().isEmpty()) {
+            String franjaHoraria = FRANJASHORARIAS[row];
+            String diaSemana = DIASSSEMANA[column];
+            String mensaje = "Franja Horaria: " + franjaHoraria + "\nDía de la Semana: " + diaSemana;
+            JOptionPane.showMessageDialog(null, mensaje);
+            App.getReservaController().setHora(9 + row);
+            App.getReservaController().setFecha(column);
+          }
+        }
+      }
+    });
   }
 
 

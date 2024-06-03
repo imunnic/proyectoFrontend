@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class FormularioReserva extends JPanel {
   private JDatePicker selectorFecha;
@@ -16,6 +18,14 @@ public class FormularioReserva extends JPanel {
   private JComboBox<String> selectorGrupo;
   private JComboBox<String> selectorFranajaHoraria;
   private JComboBox<String> selectorAsignatura;
+
+  public JComboBox<String> getSelectorAsignatura() {
+    return selectorAsignatura;
+  }
+
+  public JComboBox<String> getSelectorGrupo() {
+    return selectorGrupo;
+  }
 
   public void setProfesor(Profesor profesor) {
     this.profesor = profesor;
@@ -96,4 +106,5 @@ public class FormularioReserva extends JPanel {
       selectorGrupo.addItem(group.getNombre());
     }
   }
+
 }

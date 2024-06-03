@@ -232,6 +232,16 @@ public class ApiDAO {
     return null;
   }
 
+  public Grupo obtenerGrupoPorNombre(String nombre) {
+    //TODO poner un return
+    for (Grupo grupo : App.getGrupos()) {
+      if (grupo.getNombre().equals(nombre)) {
+        return grupo;
+      }
+    }
+    return null;
+  }
+
   public Lugar obtenerLugarPorId(int id) {
     //TODO poner un return
     for (Lugar lugar : App.getLugares()) {

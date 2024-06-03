@@ -4,6 +4,7 @@
 package proyectofrontend;
 
 import DAO.ApiDAO;
+import DAO.ReservaController;
 import componentes.LoggedListener;
 import entidades.*;
 import vistas.VistaLogin;
@@ -26,6 +27,7 @@ public class App {
   private static List<Asignatura> asignaturas;
   private static List<Grupo> grupos;
   private static List<Lugar> lugares;
+  private static ReservaController reservaController;
 
   public static Usuario getUsuario() {
     return usuario;
@@ -65,6 +67,10 @@ public class App {
 
   public static List<Profesor> getProfesores() {
     return profesores;
+  }
+
+  public static ReservaController getReservaController() {
+    return reservaController;
   }
 
   public static void main(String[] args) {
