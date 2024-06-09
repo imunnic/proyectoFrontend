@@ -29,7 +29,6 @@ class JCeldaSelectores extends AbstractCellEditor implements TableCellEditor, Ta
   @Override
   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
       int row, int column) {
-    // Assuming value is a List<String> with two elements
     if (value instanceof List) {
       List<String> values = (List<String>) value;
       comboBox1.setSelectedItem(values.get(0));

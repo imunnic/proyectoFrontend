@@ -74,6 +74,7 @@ public class SelectorSemana extends JPanel {
     setFinSemana(getFinSemana().plusWeeks(1));
     setInicioSemana(getInicioSemana().plusWeeks(1));
     actualizarTextoSemana();
+    App.getReservaController().setInicioSemana(getInicioSemana());
     cargarReservas();
   }
 
@@ -81,6 +82,7 @@ public class SelectorSemana extends JPanel {
     setInicioSemana(getInicioSemana().minusWeeks(1));
     setFinSemana(getFinSemana().minusWeeks(1));
     actualizarTextoSemana();
+    App.getReservaController().setInicioSemana(getInicioSemana());
     cargarReservas();
   }
 

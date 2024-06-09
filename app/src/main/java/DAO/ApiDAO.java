@@ -96,6 +96,36 @@ public class ApiDAO {
     return (!token.equals(""));
   }
 
+  public void reserva(ReservaRequest reservaRequest) {
+    try {
+      URL url = new URL(getApiUrl() + "/auth/login");
+      HttpURLConnection con = (HttpURLConnection) url.openConnection();
+      con.setRequestMethod("POST");
+      con.setConnectTimeout(5000);
+      con.setReadTimeout(5000);
+      con.setDoOutput(true);
+      con.setDoInput(true);
+      con.setRequestProperty("Content-Type", "application/json");
+      con.setRequestProperty("Accept", "application/json");
+
+      String token = App.getApiDAO().getToken();
+      con.setRequestProperty("Authorization", "Bearer " + token);
+
+      String body = reservaRequest.toString();
+
+      OutputStream os = con.getOutputStream();
+      byte[] input = body.toString().getBytes("utf-8");
+      os.write(input, 0, input.length);
+
+      con.disconnect();
+    } catch (IOException e) {
+      System.out.println("aquí");
+      throw new RuntimeException(e);
+    }
+
+
+  }
+
   public Usuario getUsuario() {
     Usuario usuario = new Usuario();
     try {
@@ -118,44 +148,19 @@ public class ApiDAO {
 
       con.disconnect();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return usuario;
   }
 
-//  public List<T> getEntidades(Class<T> tipo, String path) {
-//    List<T> entidades = new ArrayList<T>();
-//    try {
-//      URL url = new URL(getApiUrl() + path);
-//      HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//      con.setRequestMethod("GET");
-//      con.setConnectTimeout(5000);
-//      con.setReadTimeout(5000);
-//      con.setRequestProperty("Authorization", "Bearer " + token);
-//
-//      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//
-//      JsonNode nodeElementos = getMapper().readTree(in).findValue(path);
-//      for (JsonNode nodo : nodeElementos) {
-//        T entidad = getMapper().readValue(nodo.traverse(), tipo);
-//        entidades.add(entidad);
-//      }
-//    } catch (IOException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
-//    return entidades;
-//  }
-
-
   public List<Reserva> obtenerReservas(int profesor, LocalDate inicio, LocalDate fin)
       throws IOException, InterruptedException, URISyntaxException {
     List<Reserva> reservas = new ArrayList<>();
 
-    // Construir la URL con los parámetros
-    String url = String.format("%s/reservas/search/reservas-profesor-fecha?profesorId=%d&fechaInicio=%s&fechaFin=%s", getApiUrl(), profesor,
-        inicio.toString(), fin.toString());
+
+    String url = String.format(
+        "%s/reservas/search/reservas-profesor-fecha?profesorId=%d&fechaInicio=" + "%s&fechaFin=%s",
+        getApiUrl(), profesor, inicio.toString(), fin.toString());
 
     URL enlace = new URL(url);
     try {
@@ -175,16 +180,18 @@ public class ApiDAO {
           reservas.add(reserva);
         }
       }
-      } catch(IOException e){
-        e.printStackTrace();
-      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     return reservas;
   }
 
   public List<Asignatura> getAsignaturas() {
     //TODO poner un return
     try {
-      return mapper.readValue(new File("src/main/resources/asignaturas.json"), new TypeReference<List<Asignatura>>() {});
+      return mapper.readValue(new File("src/main/resources/asignaturas.json"),
+          new TypeReference<List<Asignatura>>() {
+          });
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -194,7 +201,9 @@ public class ApiDAO {
   public List<Profesor> getProfesores() {
     //TODO poner un return
     try {
-      return mapper.readValue(new File("src/main/resources/profesores.json"), new TypeReference<List<Profesor>>() {});
+      return mapper.readValue(new File("src/main/resources/profesores.json"),
+          new TypeReference<List<Profesor>>() {
+          });
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -204,13 +213,25 @@ public class ApiDAO {
   public List<Grupo> getGrupos() {
     //TODO poner un return
     try {
-      return mapper.readValue(new File("src/main/resources/grupos.json"), new TypeReference<List<Grupo>>() {});
+      return mapper.readValue(new File("src/main/resources/grupos.json"),
+          new TypeReference<List<Grupo>>() {
+          });
     } catch (IOException e) {
       e.printStackTrace();
     }
     return null;
   }
 
+  public List<Lugar> getLugares(){
+    try {
+      return mapper.readValue(new File("src/main/resources/lugares.json"),
+          new TypeReference<List<Lugar>>() {
+          });
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 
   public Asignatura obtenerAsignaturaPorId(int id) {
     //TODO poner un return
@@ -273,4 +294,7 @@ public class ApiDAO {
   }
 
 
+  public boolean isLugarDisponible(int id) {
+    return true; //TODO ajustar a realizar la petición
+  }
 }

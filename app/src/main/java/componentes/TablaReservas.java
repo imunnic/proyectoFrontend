@@ -10,8 +10,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,10 +27,8 @@ public class TablaReservas extends JPanel {
     inicializarDatos();
     model = modeloDeTabla();
     tabla = new JTable(model);
-    //render de celdas de horario
     tabla.getColumnModel().getColumn(0).setCellRenderer(celdasRender());
 
-    //configuracion detalles de tabla
     configurarTabla();
 
     agregarMouseListener();
@@ -44,7 +40,7 @@ public class TablaReservas extends JPanel {
   public void pintarReservas() {
     limpiarCeldas();
     if (App.getReservasApi() == null) {
-
+      //trhow exception
     } else {
       for (Reserva reserva : App.getReservasApi()) {
         int column = reserva.getFecha().getDayOfWeek().getValue();
@@ -64,7 +60,7 @@ public class TablaReservas extends JPanel {
         if (j == 0) {
           datos[i][j] = Arrays.asList(FRANJASHORARIAS[i], "");
         } else {
-          //datos[i][j] = Arrays.asList("", ""); // Otras columnas vacías
+          //datos[i][j] = Arrays.asList("", ""); // Otras columnas vacías si hiciera falta
         }
       }
     }
@@ -123,12 +119,21 @@ public class TablaReservas extends JPanel {
         if (row >= 0 && column > 0) {
           Object value = model.getValueAt(row, column);
           if (value == null || value.toString().trim().isEmpty()) {
-            String franjaHoraria = FRANJASHORARIAS[row];
-            String diaSemana = DIASSSEMANA[column];
-            String mensaje = "Franja Horaria: " + franjaHoraria + "\nDía de la Semana: " + diaSemana;
-            JOptionPane.showMessageDialog(null, mensaje);
-            App.getReservaController().setHora(9 + row);
-            App.getReservaController().setFecha(column);
+            try {
+              App.getReservaController().reservar(row + 9, column);
+            } catch (Exception ex) {
+              JOptionPane.showMessageDialog(null,"Esta franja horaria ya está ocupada para el grupo o lugar");
+            }
+          } else {
+            int response = JOptionPane.showConfirmDialog(null,
+                "¿Está seguro de que desea borrar la reserva?");
+            if(response == JOptionPane.YES_OPTION){
+              App.getReservaController().borrarReserva(row + 9, column);
+            } else if (response == JOptionPane.NO_OPTION) {
+              
+            } else if (response == JOptionPane.CLOSED_OPTION) {
+              
+            }
           }
         }
       }

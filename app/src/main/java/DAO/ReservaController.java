@@ -2,10 +2,16 @@ package DAO;
 import componentes.FormularioReserva;
 import componentes.SelectorSemana;
 import componentes.TablaReservas;
+import entidades.Asignatura;
+import entidades.Lugar;
 import proyectofrontend.App;
 
+import javax.swing.*;
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ReservaController {
   private SelectorSemana selectorSemana;
@@ -14,7 +20,16 @@ public class ReservaController {
   private int grupoId;
   private int asignaturaId;
   private LocalDate fecha;
+  private LocalDate inicioSemana;
   private int hora;
+
+  public LocalDate getInicioSemana() {
+    return inicioSemana;
+  }
+
+  public void setInicioSemana(LocalDate inicioSemana) {
+    this.inicioSemana = inicioSemana;
+  }
 
   public LocalDate getFecha() {
     return fecha;
@@ -67,20 +82,51 @@ public class ReservaController {
     return grupoId;
   }
 
-  public void obtenerIdGrupo(FormularioReserva formulario) {
-    // Obtener el nombre del grupo seleccionado en el formulario
+  public void obtenerIdGrupo() {
     String nombreGrupo = (String) formularioReserva.getSelectorGrupo().getSelectedItem();
-
-    // Utilizar la API DAO para obtener el ID del grupo
     setGrupoId(App.getApiDAO().obtenerGrupoPorNombre(nombreGrupo).getId());
   }
 
-  public void obtenerIdAsignatura(FormularioReserva formulario) {
-    // Obtener el nombre de la asignatura seleccionada en el formulario
-    String nombreAsignatura = (String) formulario.getSelectorAsignatura().getSelectedItem();
-
-    // Utilizar la API DAO para obtener el ID de la asignatura
+  public void obtenerIdAsignatura() {
+    String nombreAsignatura = (String) formularioReserva.getSelectorAsignatura().getSelectedItem();
     setAsignaturaId(App.getApiDAO().obtenerAsignaturaPorNombre(nombreAsignatura).getId());
+  }
+
+  public void reservar(int franjaHoraria, int diaSemana){
+    setFecha(diaSemana);
+    setHora(franjaHoraria);
+    obtenerIdAsignatura();
+    obtenerIdGrupo();
+    ReservaRequest request = new ReservaRequest(formularioReserva.getProfesorId(),getAsignaturaId()
+        ,getGrupoId(),getFecha(),getHora());
+    int lugarId = getLugar();
+    if (lugarId > 0) {
+    request.setLugar(lugarId);
+    System.out.println(request);
+    App.getApiDAO().reserva(request);
+    } else {
+      JOptionPane.showMessageDialog(null,"No hay lugares disponibles");
+    }
+  }
+
+  private int getLugar() {
+    Asignatura asignatura = App.getApiDAO().obtenerAsignaturaPorId(getAsignaturaId());
+    List<Integer> lugaresIds = asignatura.getLugares();
+    List<Lugar> lugaresFiltradosYOrdenados = App.getLugares().stream()
+        .filter(lugar -> lugaresIds.contains(lugar.getId()))
+        .sorted((l1, l2) -> Integer.compare(l2.getCapacidad(), l1.getCapacidad()))
+        .collect(Collectors.toList());
+    for (Lugar lugar : lugaresFiltradosYOrdenados) {
+      if (App.getApiDAO().isLugarDisponible(lugar.getId())) {
+        return lugar.getId();
+      }
+    }
+    return 0;
+  }
+
+  public void borrarReserva(int franjaHoraria, int diaSemana){
+//TODO implementar borrado
+    JOptionPane.showMessageDialog(null, "Reserva borrada");
   }
 
   @Override

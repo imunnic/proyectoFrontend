@@ -52,7 +52,7 @@ public class Profesor {
 
     @Override
     public String toString() {
-      return getNombre() + " " + getApellido(); // Esto es necesario para mostrar el nombre en el JComboBox
+      return getNombre() + " " + getApellido();
     }
   }
 

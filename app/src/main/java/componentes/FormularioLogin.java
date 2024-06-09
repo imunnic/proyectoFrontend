@@ -34,7 +34,7 @@ public class FormularioLogin extends JPanel {
 
   private JPanel crearFormularioPanel() {
     JPanel formPanel = new JPanel();
-    formPanel.setLayout(new GridLayout(0, 2, 5, 5)); // 0 rows means as many rows as needed
+    formPanel.setLayout(new GridLayout(0, 2, 5, 5));
     formPanel.setMaximumSize(new Dimension(200, 200));
     formPanel.setBackground(Color.WHITE);
     agregarComponentesFormularioPanel(formPanel);

@@ -27,9 +27,6 @@ public class VistaReservas extends JFrame {
   }
 
   public VistaReservas() {
-
-
-
     JPanel headerPanel = new Header("MiColegio");
     headerPanel.setPreferredSize(new Dimension(1, headerHeight));
 
@@ -62,6 +59,9 @@ public class VistaReservas extends JFrame {
     add(centralPanel, BorderLayout.CENTER);
     add(footerPanel, BorderLayout.SOUTH);
 
+    App.getReservaController().setFormularioReserva(this.formularioReserva);
+    App.getReservaController().setTablaReservas(this.tablaReservas);
+    App.getReservaController().setSelectorSemana(this.selectorSemana);
   }
 
   public void iniciarVistasReservas() {
@@ -91,7 +91,5 @@ public class VistaReservas extends JFrame {
     gbc.gridy = 0;
     return gbc;
   }
-
-
 
 }

@@ -11,6 +11,7 @@ import vistas.VistaLogin;
 import vistas.VistaReservas;
 
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class App {
   private static List<Asignatura> asignaturas;
   private static List<Grupo> grupos;
   private static List<Lugar> lugares;
-  private static ReservaController reservaController;
+  private static ReservaController reservaController = new ReservaController();
 
   public static Usuario getUsuario() {
     return usuario;
@@ -77,6 +78,7 @@ public class App {
     App.asignaturas = getApiDAO().getAsignaturas();
     App.profesores = getApiDAO().getProfesores();
     App.grupos = getApiDAO().getGrupos();
+    App.lugares = getApiDAO().getLugares();
     VistaLogin login = new VistaLogin();
     VistaReservas reservas = new VistaReservas();
 
@@ -84,8 +86,15 @@ public class App {
       @Override
       public void onLoggedChanged(boolean logged) {
         if (logged) {
+          setUsuario(App.getApiDAO().getUsuario());
+          if (usuario.getRol().equals("PROFESOR")){
           login.setVisible(false);
           reservas.iniciarVistasReservas();
+          } else {
+            login.setVisible(false);
+            //TODO continuar con vista gestor
+            JOptionPane.showMessageDialog(null,"gestor");
+          }
         } else {
           reservas.setVisible(false);
           login.setVisible(true);
