@@ -13,7 +13,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 public class FormularioReserva extends JPanel {
-  private JDatePicker selectorFecha;
+//  private JDatePicker selectorFecha;
   private Profesor profesor;
   private JComboBox<String> selectorGrupo;
   private JComboBox<String> selectorFranajaHoraria;
@@ -37,8 +37,8 @@ public class FormularioReserva extends JPanel {
 
   public FormularioReserva() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    JDateComponentFactory factory = new JDateComponentFactory();
-    selectorFecha = factory.createJDatePicker();
+//    JDateComponentFactory factory = new JDateComponentFactory();
+//    selectorFecha = factory.createJDatePicker();
     selectorGrupo = new JComboBox<>();
     selectorFranajaHoraria = new JComboBox<>();
     selectorAsignatura = new JComboBox<>();
@@ -61,8 +61,8 @@ public class FormularioReserva extends JPanel {
     JLabel asignatura = new JLabel("Asignatura");
     JLabel grupo = new JLabel("Grupo");
     JLabel franja = new JLabel("Franja Horaria");
-    add(fecha);
-    add((Component) selectorFecha);
+//    add(fecha);
+//    add((Component) selectorFecha);
     add(asignatura);
     add(selectorAsignatura);
     iniciarSelectorAsignaturas();

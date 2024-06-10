@@ -93,7 +93,7 @@ public class SelectorSemana extends JPanel {
   public void cargarReservas(){
     try {
       App.setReservasApi(App.getApiDAO()
-          .obtenerReservas(App.getUsuario().getId(), getInicioSemana(),
+          .obtenerReservas(App.getUsuario().getId(), getInicioSemana().minusDays(1),
               getFinSemana()));
     } catch (IOException e) {
       throw new RuntimeException(e);

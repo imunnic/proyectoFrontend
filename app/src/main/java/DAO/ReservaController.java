@@ -101,9 +101,10 @@ public class ReservaController {
         ,getGrupoId(),getFecha(),getHora());
     int lugarId = getLugar();
     if (lugarId > 0) {
-    request.setLugar(lugarId);
-    System.out.println(request);
+    request.setLugar(App.getApiDAO().lugarHref(lugarId));
     App.getApiDAO().reserva(request);
+    selectorSemana.cargarReservas();
+    tablaReservas.pintarReservas();
     } else {
       JOptionPane.showMessageDialog(null,"No hay lugares disponibles");
     }

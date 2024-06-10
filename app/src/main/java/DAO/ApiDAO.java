@@ -98,28 +98,15 @@ public class ApiDAO {
 
   public void reserva(ReservaRequest reservaRequest) {
     try {
-      URL url = new URL(getApiUrl() + "/auth/login");
-      HttpURLConnection con = (HttpURLConnection) url.openConnection();
-      con.setRequestMethod("POST");
-      con.setConnectTimeout(5000);
-      con.setReadTimeout(5000);
-      con.setDoOutput(true);
-      con.setDoInput(true);
-      con.setRequestProperty("Content-Type", "application/json");
-      con.setRequestProperty("Accept", "application/json");
-
-      String token = App.getApiDAO().getToken();
-      con.setRequestProperty("Authorization", "Bearer " + token);
-
       String body = reservaRequest.toString();
-
-      OutputStream os = con.getOutputStream();
-      byte[] input = body.toString().getBytes("utf-8");
-      os.write(input, 0, input.length);
-
-      con.disconnect();
-    } catch (IOException e) {
-      System.out.println("aquí");
+      HttpClient cliente = HttpClient.newHttpClient();
+      HttpRequest request = HttpRequest.newBuilder()
+                                       .uri(URI.create(getApiUrl()+"/reservas"))
+                                       .POST(HttpRequest.BodyPublishers.ofString(body))
+                                       .header("Authorization", "Bearer " + token)
+                                       .build();
+      cliente.send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
 
@@ -156,7 +143,6 @@ public class ApiDAO {
   public List<Reserva> obtenerReservas(int profesor, LocalDate inicio, LocalDate fin)
       throws IOException, InterruptedException, URISyntaxException {
     List<Reserva> reservas = new ArrayList<>();
-
 
     String url = String.format(
         "%s/reservas/search/reservas-profesor-fecha?profesorId=%d&fechaInicio=" + "%s&fechaFin=%s",
@@ -291,6 +277,10 @@ public class ApiDAO {
       }
     }
     return null;
+  }
+
+  public String lugarHref(int id){
+    return getApiUrl() + "/lugares/" + id;
   }
 
 
