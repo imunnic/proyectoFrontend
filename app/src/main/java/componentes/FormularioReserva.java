@@ -16,7 +16,7 @@ public class FormularioReserva extends JPanel {
 //  private JDatePicker selectorFecha;
   private Profesor profesor;
   private JComboBox<String> selectorGrupo;
-  private JComboBox<String> selectorFranajaHoraria;
+
   private JComboBox<String> selectorAsignatura;
 
   public JComboBox<String> getSelectorAsignatura() {
@@ -40,7 +40,6 @@ public class FormularioReserva extends JPanel {
 //    JDateComponentFactory factory = new JDateComponentFactory();
 //    selectorFecha = factory.createJDatePicker();
     selectorGrupo = new JComboBox<>();
-    selectorFranajaHoraria = new JComboBox<>();
     selectorAsignatura = new JComboBox<>();
 
     selectorAsignatura.addActionListener(new ActionListener() {
@@ -68,24 +67,11 @@ public class FormularioReserva extends JPanel {
     iniciarSelectorAsignaturas();
     add(grupo);
     add(selectorGrupo);
-    add(franja);
-    add(selectorFranajaHoraria);
-    llenarSelectorFranjaHoraria();
   }
 
   private void iniciarSelectorAsignaturas() {
     for (Integer asignatura : profesor.getAsignaturas()) {
       selectorAsignatura.addItem(App.getApiDAO().obtenerAsignaturaPorId(asignatura).getNombre());
-    }
-  }
-
-  private void llenarSelectorFranjaHoraria() {
-    int horaInicio = 9;
-    int horaFin = 15;
-
-    for (int i = horaInicio; i < horaFin; i++) {
-      FranjaHoraria franja = new FranjaHoraria(i, i + 1);
-      selectorFranajaHoraria.addItem(franja.toString());
     }
   }
 
