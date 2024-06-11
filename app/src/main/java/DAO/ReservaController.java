@@ -4,14 +4,17 @@ import componentes.SelectorSemana;
 import componentes.TablaReservas;
 import entidades.Asignatura;
 import entidades.Lugar;
+import entidades.Reserva;
 import proyectofrontend.App;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,6 +95,18 @@ public class ReservaController {
   public void obtenerIdAsignatura() {
     String nombreAsignatura = (String) formularioReserva.getSelectorAsignatura().getSelectedItem();
     setAsignaturaId(App.getApiDAO().obtenerAsignaturaPorNombre(nombreAsignatura).getId());
+  }
+
+  public List<Reserva> reservasGrupo(int grupoId) {
+    List<Reserva> reservasGrupo = new ArrayList<>();
+    try {
+      reservasGrupo = App.getApiDAO().obtenerReservasGrupo(grupoId,
+          selectorSemana.getInicioSemana().minusDays(1), selectorSemana.getFinSemana() );
+      repintar();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return reservasGrupo;
   }
 
   public void reservar(int franjaHoraria, int diaSemana){

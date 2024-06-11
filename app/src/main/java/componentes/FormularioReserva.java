@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.stream.Collectors;
 
 public class FormularioReserva extends JPanel {
 //  private JDatePicker selectorFecha;
@@ -52,6 +53,7 @@ public class FormularioReserva extends JPanel {
         }
       }
     });
+
   }
 
   public void iniciarFormulario(Profesor profesor){
@@ -67,6 +69,20 @@ public class FormularioReserva extends JPanel {
     iniciarSelectorAsignaturas();
     add(grupo);
     add(selectorGrupo);
+
+    selectorGrupo.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Grupo grupoSeleccionado = App.getApiDAO().obtenerGrupoPorNombre(selectorGrupo.getSelectedItem().toString());
+        if (grupoSeleccionado != null) {
+          App.setReservasApi(App.getReservasApi().stream().filter(r -> {return r.getProfesor() == profesor.getId();}).collect(
+              Collectors.toList()));
+          App.getReservaController().reservasGrupo(grupoSeleccionado.getId()).forEach(r -> {
+            App.getReservasApi().add(r);
+          });
+        }
+      }
+    });
   }
 
   private void iniciarSelectorAsignaturas() {

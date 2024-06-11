@@ -70,6 +70,7 @@ public class VistaReservas extends JFrame {
     setVisible(true);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     selectorSemana.cargarReservas();
+    System.out.println(App.getReservasApi());
     App.getReservaController().setFormularioReserva(formularioReserva);
     App.getReservaController().setTablaReservas(tablaReservas);
     App.getReservaController().setSelectorSemana(selectorSemana);

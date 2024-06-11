@@ -22,7 +22,7 @@ public class App {
   private static boolean logged;
   private static final LocalDate hoy = LocalDate.now();
   private static List<LoggedListener> loggedListeners = new ArrayList<>();
-  private static List<Reserva> reservasApi;
+  private static List<Reserva> reservasApi = new ArrayList<>();
   private static Usuario usuario;
   private static List<Profesor> profesores;
   private static List<Asignatura> asignaturas;

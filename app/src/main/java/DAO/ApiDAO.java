@@ -151,7 +151,6 @@ public class ApiDAO {
   public List<Reserva> obtenerReservas(int profesor, LocalDate inicio, LocalDate fin)
       throws IOException, InterruptedException, URISyntaxException {
     List<Reserva> reservas = new ArrayList<>();
-
     String url = String.format(
         "%s/reservas/search/reservas-profesor-fecha?profesorId=%d&fechaInicio=" + "%s&fechaFin=%s",
         getApiUrl(), profesor, inicio.toString(), fin.toString());
@@ -167,7 +166,39 @@ public class ApiDAO {
       BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
       JsonNode nodeElementos = getMapper().readTree(in).findValue("reservas");
       if (nodeElementos == null) {
-        reservas = null;
+        reservas = new ArrayList<>();
+      } else {
+        for (JsonNode nodo : nodeElementos) {
+          Reserva reserva = getMapper().readValue(nodo.traverse(), Reserva.class);
+          reservas.add(reserva);
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return reservas;
+  }
+
+  public List<Reserva> obtenerReservasGrupo(int grupoId, LocalDate inicio, LocalDate fin)
+      throws IOException, InterruptedException, URISyntaxException {
+    List<Reserva> reservas = new ArrayList<>();
+
+    String url = String.format(
+        "%s/reservas/search/reservas-grupo-fecha?grupoId=%d&fechaInicio=" + "%s&fechaFin=%s",
+        getApiUrl(), grupoId, inicio.toString(), fin.toString());
+
+    URL enlace = new URL(url);
+    try {
+      HttpURLConnection con = (HttpURLConnection) enlace.openConnection();
+      con.setRequestMethod("GET");
+      con.setConnectTimeout(5000);
+      con.setReadTimeout(5000);
+      con.setRequestProperty("Authorization", "Bearer " + token);
+
+      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+      JsonNode nodeElementos = getMapper().readTree(in).findValue("reservas");
+      if (nodeElementos == null) {
+        reservas = new ArrayList<>();
       } else {
         for (JsonNode nodo : nodeElementos) {
           Reserva reserva = getMapper().readValue(nodo.traverse(), Reserva.class);
