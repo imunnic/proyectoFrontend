@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import entidades.*;
 import proyectofrontend.App;
 
+import javax.swing.plaf.FontUIResource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,6 +21,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
@@ -105,7 +107,13 @@ public class ApiDAO {
                                        .POST(HttpRequest.BodyPublishers.ofString(body))
                                        .header("Authorization", "Bearer " + token)
                                        .build();
-      cliente.send(request, HttpResponse.BodyHandlers.ofString());
+      HttpResponse<String> response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+
+      // Verificar el código de estado de la respuesta
+      int statusCode = response.statusCode();
+      if (statusCode != 201) {
+        throw new RuntimeException("Error al hacer la reserva. Código de estado: " + statusCode);
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -173,42 +181,43 @@ public class ApiDAO {
   }
 
   public List<Asignatura> getAsignaturas() {
-    //TODO poner un return
+    List<Asignatura> asignaturas = new ArrayList<>();
     try {
-      return mapper.readValue(new File("src/main/resources/asignaturas.json"),
+      asignaturas = mapper.readValue(new File("src/main/resources/asignaturas.json"),
           new TypeReference<List<Asignatura>>() {
           });
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return null;
+    return asignaturas;
   }
 
   public List<Profesor> getProfesores() {
-    //TODO poner un return
+    List<Profesor> profesores = new ArrayList<>();
     try {
-      return mapper.readValue(new File("src/main/resources/profesores.json"),
+      profesores = mapper.readValue(new File("src/main/resources/profesores.json"),
           new TypeReference<List<Profesor>>() {
           });
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return null;
+    return profesores;
   }
 
   public List<Grupo> getGrupos() {
-    //TODO poner un return
+    List<Grupo> grupos = new ArrayList<>();
     try {
-      return mapper.readValue(new File("src/main/resources/grupos.json"),
+      grupos = mapper.readValue(new File("src/main/resources/grupos.json"),
           new TypeReference<List<Grupo>>() {
           });
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return null;
+    return grupos;
   }
 
   public List<Lugar> getLugares(){
+    List<Lugar> lugares = new ArrayList<>();
     try {
       return mapper.readValue(new File("src/main/resources/lugares.json"),
           new TypeReference<List<Lugar>>() {
@@ -220,71 +229,140 @@ public class ApiDAO {
   }
 
   public Asignatura obtenerAsignaturaPorId(int id) {
-    //TODO poner un return
+    Asignatura resultado = null;
     for (Asignatura asignatura : App.getAsignaturas()) {
       if (asignatura.getId() == id) {
-        return asignatura;
+        resultado = asignatura;
+        break;
       }
     }
-    return null;
+    return resultado;
   }
 
   public Grupo obtenerGrupoPorId(int id) {
-    //TODO poner un return
+    Grupo resultado = null;
     for (Grupo grupo : App.getGrupos()) {
       if (grupo.getId() == id) {
-        return grupo;
+        resultado = grupo;
+        break;
       }
     }
-    return null;
+    return resultado;
   }
 
   public Grupo obtenerGrupoPorNombre(String nombre) {
-    //TODO poner un return
+    Grupo resultado = null;
     for (Grupo grupo : App.getGrupos()) {
       if (grupo.getNombre().equals(nombre)) {
-        return grupo;
+        resultado = grupo;
+        break;
       }
     }
-    return null;
+    return resultado;
   }
 
   public Lugar obtenerLugarPorId(int id) {
-    //TODO poner un return
+    Lugar resultado = null;
     for (Lugar lugar : App.getLugares()) {
       if (lugar.getId() == id) {
-        return lugar;
+        resultado = lugar;
+        break;
       }
     }
-    return null;
+    return resultado;
   }
 
   public Asignatura obtenerAsignaturaPorNombre(String nombre) {
-    //TODO poner un return
+    Asignatura resultado = null;
     for (Asignatura asignatura : App.getAsignaturas()) {
       if (asignatura.getNombre().equals(nombre)) {
-        return asignatura;
+        resultado = asignatura;
+        break;
       }
     }
-    return null;
+    return resultado;
   }
 
   public Profesor obtenerProfesorPorId(int id) {
-    //TODO poner un return
+    Profesor resultado = null;
     for (Profesor profesor : App.getProfesores()) {
       if (profesor.getId() == id) {
-        return profesor;
+        resultado = profesor;
+        break;
       }
     }
-    return null;
+    return resultado;
   }
 
   public String lugarHref(int id){
     return getApiUrl() + "/lugares/" + id;
   }
 
+  private int buscarReserva(String fecha, int hora) {
+    String busqueda = "?fecha=" + fecha + "&hora=" + hora;
+    HttpClient cliente = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(getApiUrl() + "/reservas/search/findByFechaAndHora" + busqueda))
+        .GET()
+        .header("Authorization", "Bearer " + token)
+        .build();
+    try {
+      HttpResponse<String> response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
 
-  public boolean isLugarDisponible(int id) {
-    return true; //TODO ajustar a realizar la petición
+      if (response.statusCode() == 200) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonResponse = mapper.readTree(response.body());
+        JsonNode reservas = jsonResponse.path("_embedded").path("reservas");
+        if (reservas.isArray() && reservas.size() > 0) {
+          JsonNode reserva = reservas.get(0);
+          return reserva.path("identificacion").asInt();
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return -1; // Indicador de que no se encontró reserva
+  }
+
+  public void borrarReserva(String fecha, int hora) {
+    int idReserva = buscarReserva(fecha, hora);
+    if (idReserva != -1) {
+      HttpClient cliente = HttpClient.newHttpClient();
+      HttpRequest requestBorrado = HttpRequest.newBuilder()
+          .DELETE()
+          .header("Authorization", "Bearer " + token)
+          .uri(URI.create(getApiUrl() + "/reservas/" + idReserva))
+          .build();
+      try {
+        cliente.send(requestBorrado, HttpResponse.BodyHandlers.ofString());
+      } catch (IOException | InterruptedException e) {
+        System.out.println("Error en borrado");
+        throw new RuntimeException(e);
+      }
+    } else {
+      System.out.println("No se encontró reserva para la fecha y hora especificadas.");
+    }
+  }
+
+
+  public boolean isLugarDisponible(int id, LocalDate fecha, int hora) {
+    boolean retorno = false;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String consulta = "/reservas/search/lugar-disponible?lugar=" +
+        id +"&fecha=" +fecha.format(formatter) + "&hora=" + hora;
+    HttpClient cliente = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest
+        .newBuilder()
+        .GET()
+        .header("Authorization", "Bearer " + token)
+        .uri(URI.create(getApiUrl()+consulta)).build();
+    try {
+      HttpResponse<String> response = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+      String responseBody = response.body();
+      retorno = Boolean.parseBoolean(responseBody);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return retorno;
   }
 }

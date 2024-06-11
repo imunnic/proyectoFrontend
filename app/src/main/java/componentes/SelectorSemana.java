@@ -46,8 +46,8 @@ public class SelectorSemana extends JPanel {
   public SelectorSemana(TablaReservas tabla) {
     this.tabla = tabla;
     formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    btnAnterior = new JButton("Semana Anterior");
-    btnSiguiente = new JButton("Semana Siguiente");
+    btnAnterior = new JButton("<");
+    btnSiguiente = new JButton(">");
     inicioSemana = App.getHoy().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     finSemana = App.getHoy().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
     semanaActual = new JLabel();

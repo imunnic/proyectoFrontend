@@ -8,8 +8,10 @@ import proyectofrontend.App;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.http.HttpClient;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,9 +104,13 @@ public class ReservaController {
     int lugarId = getLugar();
     if (lugarId > 0) {
     request.setLugar(App.getApiDAO().lugarHref(lugarId));
-    App.getApiDAO().reserva(request);
-    selectorSemana.cargarReservas();
-    tablaReservas.pintarReservas();
+      try {
+        App.getApiDAO().reserva(request);
+        JOptionPane.showMessageDialog(null, "Reserva realizada");
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      repintar();
     } else {
       JOptionPane.showMessageDialog(null,"No hay lugares disponibles");
     }
@@ -118,7 +124,7 @@ public class ReservaController {
         .sorted((l1, l2) -> Integer.compare(l2.getCapacidad(), l1.getCapacidad()))
         .collect(Collectors.toList());
     for (Lugar lugar : lugaresFiltradosYOrdenados) {
-      if (App.getApiDAO().isLugarDisponible(lugar.getId())) {
+      if (App.getApiDAO().isLugarDisponible(lugar.getId(), getFecha(), getHora())) {
         return lugar.getId();
       }
     }
@@ -126,7 +132,11 @@ public class ReservaController {
   }
 
   public void borrarReserva(int franjaHoraria, int diaSemana){
-//TODO implementar borrado
+    LocalDate fecha = selectorSemana.getInicioSemana().plusDays(diaSemana - 1);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    String fechaFormateda = fecha.format(formatter);
+    App.getApiDAO().borrarReserva(fechaFormateda, franjaHoraria);
+    repintar();
     JOptionPane.showMessageDialog(null, "Reserva borrada");
   }
 
@@ -136,5 +146,10 @@ public class ReservaController {
         "fecha=" + fecha +
         ", hora=" + hora +
         '}';
+  }
+
+  public void repintar(){
+    selectorSemana.cargarReservas();
+    tablaReservas.pintarReservas();
   }
 }

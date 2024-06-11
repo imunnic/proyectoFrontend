@@ -6,7 +6,7 @@ public class ReservaRequest {
   private int profesor;
   private int asignatura;
   private int grupo;
-  private int lugar;
+  private String lugar;
   private LocalDate fecha;
   private int hora;
 
@@ -45,11 +45,11 @@ public class ReservaRequest {
     this.grupo = grupo;
   }
 
-  public int getLugar() {
+  public String getLugar() {
     return lugar;
   }
 
-  public void setLugar(int lugar) {
+  public void setLugar(String lugar) {
     this.lugar = lugar;
   }
 
@@ -72,12 +72,12 @@ public class ReservaRequest {
   @Override
   public String toString() {
     return "{" +
-        "\"profesor\"=" + profesor +
-        ", \"asignatura\"=" + asignatura +
-        ", \"grupo\"=" + grupo +
-        ", \"lugar\"=" + lugar +
-        ", \"fecha\"=" + "\"" + fecha + "\"" +
-        ", \"hora\"=" + hora +
+        "\"profesor\":" + profesor +
+        ", \"asignatura\":" + asignatura +
+        ", \"grupo\":" + grupo +
+        ", \"lugar\":" + "\"" + lugar + "\"" +
+        ", \"fecha\":" + "\"" + fecha + "\"" +
+        ", \"hora\":" + hora +
         '}';
   }
 }
