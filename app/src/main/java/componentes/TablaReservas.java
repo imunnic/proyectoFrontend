@@ -125,14 +125,20 @@ public class TablaReservas extends JPanel {
               JOptionPane.showMessageDialog(null,"Esta franja horaria ya está ocupada para el grupo o lugar");
             }
           } else {
+            if (App.getReservaController().esMiReserva(row + 9, column)){
             int response = JOptionPane.showConfirmDialog(null,
                 "¿Está seguro de que desea borrar la reserva?");
             if(response == JOptionPane.YES_OPTION){
               App.getReservaController().borrarReserva(row + 9, column);
             } else if (response == JOptionPane.NO_OPTION) {
-              
+
             } else if (response == JOptionPane.CLOSED_OPTION) {
-              
+
+            }
+
+            }
+            else {
+              JOptionPane.showMessageDialog(null,"Esta no es su reserva");
             }
           }
         }

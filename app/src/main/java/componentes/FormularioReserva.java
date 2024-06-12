@@ -75,11 +75,7 @@ public class FormularioReserva extends JPanel {
       public void actionPerformed(ActionEvent e) {
         Grupo grupoSeleccionado = App.getApiDAO().obtenerGrupoPorNombre(selectorGrupo.getSelectedItem().toString());
         if (grupoSeleccionado != null) {
-          App.setReservasApi(App.getReservasApi().stream().filter(r -> {return r.getProfesor() == profesor.getId();}).collect(
-              Collectors.toList()));
-          App.getReservaController().reservasGrupo(grupoSeleccionado.getId()).forEach(r -> {
-            App.getReservasApi().add(r);
-          });
+          App.getReservaController().repintar(grupoSeleccionado.getId());
         }
       }
     });

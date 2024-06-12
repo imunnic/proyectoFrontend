@@ -90,4 +90,14 @@ public class Reserva {
   public String toString() {
     return "ID: " + getIdentificacion();
   }
+
+  @Override
+  public int hashCode() {
+    return getFecha().hashCode() + getHora();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return hashCode() == obj.hashCode();
+  }
 }

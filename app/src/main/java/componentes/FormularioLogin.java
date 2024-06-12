@@ -43,10 +43,10 @@ public class FormularioLogin extends JPanel {
 
   private void agregarComponentesFormularioPanel(JPanel formPanel) {
     formPanel.add(USUARIO);
-    usuarioCampo = new JTextField("sofia"); //TODO quitar harcode para login rapido
+    usuarioCampo = new JTextField("alejandro"); //TODO quitar harcode para login rapido
     formPanel.add(usuarioCampo);
     formPanel.add(PASSWORD);
-    passwordCampo = new JPasswordField("sofia");//TODO quitar harcode para login rápido
+    passwordCampo = new JPasswordField("alejandro");//TODO quitar harcode para login rápido
     formPanel.add(passwordCampo);
   }
 

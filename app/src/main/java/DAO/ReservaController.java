@@ -3,6 +3,7 @@ import componentes.FormularioReserva;
 import componentes.SelectorSemana;
 import componentes.TablaReservas;
 import entidades.Asignatura;
+import entidades.Grupo;
 import entidades.Lugar;
 import entidades.Reserva;
 import proyectofrontend.App;
@@ -146,6 +147,22 @@ public class ReservaController {
     return 0;
   }
 
+  public boolean esMiReserva(int franjaHoraria, int diaSemana) {
+    return getReservaApp(franjaHoraria, diaSemana).getProfesor() == formularioReserva.getProfesorId();
+  }
+  public Reserva getReservaApp(int franjaHoraria, int diaSemana) {
+    LocalDate fechaAux = selectorSemana.getInicioSemana().plusDays(diaSemana - 1);
+    Reserva reservaAux = new Reserva();
+    Reserva reserva;
+    reservaAux.setFecha(fechaAux);
+    reservaAux.setHora(franjaHoraria);
+    reserva = App.getReservasApi().stream().filter(r -> {
+      System.out.println(r);
+      return r.equals(reservaAux);
+    }).collect(Collectors.toList()).get(0);
+    return reserva;
+  }
+
   public void borrarReserva(int franjaHoraria, int diaSemana){
     LocalDate fecha = selectorSemana.getInicioSemana().plusDays(diaSemana - 1);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -165,6 +182,21 @@ public class ReservaController {
 
   public void repintar(){
     selectorSemana.cargarReservas();
+
     tablaReservas.pintarReservas();
+  }
+
+  public void repintar(int grupoId){
+    selectorSemana.cargarReservas();
+        quitarReservasExtra();
+        App.getReservaController().reservasGrupo(grupoId).forEach(r -> {
+          App.getReservasApi().add(r);
+        });
+    tablaReservas.pintarReservas();
+  }
+
+  public void quitarReservasExtra() {
+    App.setReservasApi(App.getReservasApi().stream().filter(r -> {return r.getProfesor() == formularioReserva.getProfesorId();}).collect(
+        Collectors.toList()));
   }
 }
